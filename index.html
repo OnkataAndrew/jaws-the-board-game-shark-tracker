@@ -6,12 +6,12 @@
 <title>JAWS — Shark Tracker</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&family=Oswald:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --deep:#010d16; --mid:#031522; --surf:#04202f; --lift:#063244;
-  --glow:#0d7ab5; --foam:#7ecbdf; --red:#c0392b; --red2:#e74c3c;
-  --text:#cce6f0; --dim:#3f7a94; --white:#fff;
-  --ff:#e74c3c; --oos:#27ae60; --sb:#e67e22; --em:#8e44ad;
-  --barrel:#f0b429; --border:rgba(13,122,181,.25);
+:root{
+  --deep:#010d16;--mid:#031522;--surf:#04202f;--lift:#063244;
+  --glow:#0d7ab5;--foam:#7ecbdf;--red:#c0392b;--red2:#e74c3c;
+  --text:#cce6f0;--dim:#3f7a94;--white:#fff;
+  --ff:#e74c3c;--oos:#27ae60;--sb:#e67e22;--em:#8e44ad;
+  --barrel:#f0b429;--border:rgba(13,122,181,.25);
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 body{background:var(--deep);color:var(--text);font-family:'Share Tech Mono',monospace;min-height:100vh;}
@@ -19,7 +19,6 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;
   background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.025) 3px,rgba(0,0,0,.025) 4px);}
 .app{max-width:460px;margin:0 auto;padding:12px 12px 60px;}
 
-/* HEADER */
 .hdr{text-align:center;padding:18px 0 12px;margin-bottom:12px;position:relative;}
 .hdr::after{content:'';position:absolute;bottom:0;left:10%;right:10%;height:1px;
   background:linear-gradient(90deg,transparent,var(--glow),transparent);}
@@ -32,7 +31,6 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;
 @keyframes finb{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-5px) rotate(4deg)}}
 .tagline{font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:5px;color:var(--dim);margin-top:4px;}
 
-/* STATUS */
 .status{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:12px;}
 .stat{background:var(--mid);border:1px solid var(--border);border-radius:4px;padding:7px 4px;text-align:center;}
 .slbl{display:block;font-size:7.5px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;margin-bottom:1px;}
@@ -40,7 +38,6 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;
 .sval.r{color:var(--red2);}.sval.g{color:var(--oos);}
 .sval.b{color:var(--foam);font-size:17px;padding-top:4px;display:block;}
 
-/* SECTION */
 .section{background:var(--mid);border:1px solid var(--border);border-radius:6px;margin-bottom:12px;overflow:hidden;}
 .sec-hd{display:flex;align-items:center;gap:8px;padding:8px 14px;
   background:rgba(13,122,181,.07);border-bottom:1px solid var(--border);
@@ -49,165 +46,114 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;
   animation:pd 2s ease-in-out infinite;flex-shrink:0;}
 @keyframes pd{0%,100%{opacity:1}50%{opacity:.2}}
 
-/* ── MAP ── */
+/* MAP */
 .map-wrap{padding:10px;}
-
-/* The map is a 3:2 rectangle with an SVG overlay */
 .map-outer{
   position:relative;width:100%;
-  aspect-ratio:3/2;
+  aspect-ratio:900/600;
   border-radius:4px;overflow:hidden;
   border:2px solid rgba(13,122,181,.3);
   background:#041828;
 }
-.map-base{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
-.map-overlay{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .35s ease;pointer-events:none;}
+.map-base,.map-overlay{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.map-overlay{opacity:0;transition:opacity .35s ease;pointer-events:none;}
 .map-overlay.active{opacity:1;}
-
-/* SVG zone polygons sit on top — viewBox matches 300×200 (3:2) */
 .zones-svg{position:absolute;inset:0;width:100%;height:100%;}
 
-/* Zone polygon styles */
-.zone-poly{
-  fill:transparent;
-  stroke:rgba(255,255,255,0.15);
-  stroke-width:0.8;
-  cursor:pointer;
-  transition:fill .15s, stroke .15s;
-}
-.zone-poly:hover{fill:rgba(255,255,255,.09);stroke:rgba(255,255,255,.4);}
-.zone-poly.sel{fill:rgba(231,76,60,.22);stroke:var(--red2);stroke-width:1.5;}
+/* Zone polygons — transparent by default, white outline on hover, white outline on selected (no fill) */
+.zp{fill:transparent;stroke:transparent;stroke-width:0;cursor:pointer;transition:fill .12s,stroke .12s,stroke-width .12s;}
+.zp:hover{fill:rgba(255,255,255,.08);stroke:rgba(255,255,255,.55);stroke-width:2;}
+.zp.sel{fill:transparent;stroke:transparent;stroke-width:0;filter:none;}
 
-.zone-label-svg{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:10px;fill:rgba(255,255,255,.65);
-  pointer-events:none;user-select:none;
-  text-shadow:none;
-}
-.zone-poly.sel ~ .zone-label-svg, .zone-label-svg.sel{fill:var(--white);}
+/* NO text labels on the SVG — labels removed per request */
+.shark-mk{pointer-events:none;user-select:none;font-size:30px;text-anchor:middle;dominant-baseline:middle;
+  animation:shk .9s ease-in-out infinite alternate;filter:drop-shadow(0 2px 5px rgba(0,0,0,1));}
+@keyframes shk{from{opacity:.65}to{opacity:1}}
 
-/* Shark marker inside SVG */
-.shark-svg{
-  font-size:14px;pointer-events:none;user-select:none;
-  animation:shksvg .9s ease-in-out infinite alternate;
-}
-@keyframes shksvg{from{opacity:.65}to{opacity:1}}
-
-/* Map placeholder */
-.map-placeholder{
-  position:absolute;inset:0;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:6px;
-  color:var(--dim);font-size:10px;letter-spacing:1px;text-align:center;padding:16px;
-  pointer-events:none;
-}
-.map-placeholder.hidden{display:none;}
-
-.img-note{
-  background:rgba(240,180,41,.07);border:1px solid rgba(240,180,41,.2);
-  border-radius:4px;padding:7px 12px;margin-top:8px;
-  font-size:8.5px;letter-spacing:.5px;color:rgba(240,180,41,.7);line-height:1.6;
-}
+.map-ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:6px;color:var(--dim);font-size:10px;text-align:center;padding:16px;pointer-events:none;}
+.map-ph.hidden{display:none;}
+.img-note{background:rgba(240,180,41,.07);border:1px solid rgba(240,180,41,.2);
+  border-radius:4px;padding:7px 12px;margin-top:8px;font-size:8.5px;color:rgba(240,180,41,.7);line-height:1.6;}
 .img-note strong{color:var(--barrel);}
 
-/* ── LOCATION GRID (below map) ── */
-.loc-pad{padding:10px 10px 0;}
+.loc-pad{padding:10px;}
 .lgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;}
 .lbtn{background:var(--surf);border:1px solid var(--border);color:var(--text);
   padding:9px 2px;border-radius:3px;cursor:pointer;
-  font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;
-  text-align:center;transition:all .15s;user-select:none;}
+  font-family:'Bebas Neue',sans-serif;font-size:20px;text-align:center;transition:all .15s;user-select:none;}
 .lbtn:hover{background:var(--lift);border-color:var(--glow);}
 .lbtn.on{background:rgba(231,76,60,.22);border-color:var(--red2);color:var(--white);box-shadow:0 0 10px rgba(231,76,60,.3);}
 .lbtn .sub{display:block;font-size:6px;font-family:'Oswald',sans-serif;letter-spacing:1px;color:var(--dim);margin-top:1px;}
 .lbtn.on .sub{color:var(--red2);}
 
-/* ── ROUND NAV ── */
 .rb{padding:14px;}
 .rnav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
 .nbtn{background:var(--surf);border:1px solid var(--border);color:var(--text);
-  padding:8px 14px;border-radius:3px;cursor:pointer;
-  font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:2px;transition:all .15s;}
+  padding:8px 14px;border-radius:3px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:2px;transition:all .15s;}
 .nbtn:hover{background:var(--lift);border-color:var(--glow);}
 .nbtn:disabled{opacity:.3;cursor:default;}
 .rdisp{text-align:center;}
 .rbig{font-family:'Bebas Neue',sans-serif;font-size:42px;line-height:1;color:var(--white);}
 .rlbl{font-size:8px;letter-spacing:3px;color:var(--dim);text-transform:uppercase;}
-
 .fl{display:block;font-size:8px;letter-spacing:3px;color:var(--dim);text-transform:uppercase;margin-bottom:6px;}
 
-/* SWIMMERS */
 .swim{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px;}
 .si{text-align:center;}
 .slb{font-size:8px;letter-spacing:2px;color:var(--dim);display:block;margin-bottom:3px;}
 .sc{display:flex;align-items:stretch;}
-.cb{background:var(--surf);border:1px solid var(--border);color:var(--text);
-  width:24px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:background .1s;}
+.cb{background:var(--surf);border:1px solid var(--border);color:var(--text);width:24px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:background .1s;}
 .cb:first-child{border-radius:3px 0 0 3px;}.cb:last-child{border-radius:0 3px 3px 0;}
 .cb:hover{background:var(--lift);}
 .cv{background:var(--deep);border-top:1px solid var(--border);border-bottom:1px solid var(--border);
   flex:1;display:flex;align-items:center;justify-content:center;
   font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--red2);}
 
-/* ── BARRELS (moved above log btn) ── */
-.barrels-inner{padding:10px 14px 12px;}
-.barrels-row{display:flex;align-items:center;justify-content:center;gap:20px;margin-bottom:4px;}
-.barrel-wrap{text-align:center;}
-.barrel-btn{
-  font-size:clamp(36px,10vw,52px);
-  background:none;border:none;cursor:pointer;display:block;line-height:1;
-  filter: sepia(1) saturate(5) hue-rotate(5deg) brightness(1.1) drop-shadow(0 0 10px rgba(240,180,41,.55));
-  animation:bsway 3s ease-in-out infinite;-webkit-tap-highlight-color:transparent;transition:all .2s;
-}
-@keyframes bsway{0%,100%{transform:rotate(-5deg) translateY(0)}50%{transform:rotate(5deg) translateY(-3px)}}
-.barrel-btn.used{filter:grayscale(1) brightness(.3) !important;animation:none !important;cursor:default;}
-.barrel-btn.undone{
-  filter: sepia(1) saturate(5) hue-rotate(5deg) brightness(1.1) drop-shadow(0 0 12px rgba(240,180,41,.7)) !important;
-  animation:bsway 3s ease-in-out infinite !important;cursor:pointer;
-}
-.barrel-lbl{font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:2px;color:var(--barrel);margin-top:3px;text-transform:uppercase;}
-.barrel-lbl.hit{color:var(--red2);}
-.barrel-counter{text-align:center;}
-.bc-num{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--barrel);letter-spacing:2px;line-height:1;}
-.bc-lbl{font-size:7.5px;letter-spacing:2px;color:var(--dim);}
-.barrels-info{font-size:8.5px;letter-spacing:.5px;color:var(--dim);text-align:center;padding-top:4px;}
-
-/* TOKENS */
 .tokens{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px;}
-.tok{display:flex;align-items:center;gap:8px;background:var(--surf);
-  border:1px solid var(--border);border-radius:3px;padding:9px 10px;
-  cursor:pointer;transition:all .15s;user-select:none;position:relative;overflow:hidden;}
+.tok{display:flex;align-items:center;gap:8px;background:var(--surf);border:1px solid var(--border);border-radius:3px;padding:9px 10px;cursor:pointer;transition:all .15s;user-select:none;position:relative;overflow:hidden;}
 .tok:hover:not(.locked){border-color:rgba(13,122,181,.5);}
 .tok.on.ff{background:rgba(231,76,60,.14);border-color:var(--ff);color:var(--ff);}
 .tok.on.oos{background:rgba(39,174,96,.14);border-color:var(--oos);color:var(--oos);}
 .tok.on.sb{background:rgba(230,126,34,.14);border-color:var(--sb);color:var(--sb);}
 .tok.on.em{background:rgba(142,68,173,.14);border-color:var(--em);color:var(--em);}
 .tok.locked{opacity:.28;cursor:not-allowed;pointer-events:none;background:var(--deep);}
-.tok.locked::after{content:'USED';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:3px;color:rgba(255,255,255,.18);}
-.tbox{width:15px;height:15px;border:1px solid var(--border);border-radius:2px;
-  display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;}
+.tok.locked::after{content:'USED';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:3px;color:rgba(255,255,255,.18);}
+.tbox{width:15px;height:15px;border:1px solid var(--border);border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;}
 .tok.on .tbox{border-color:currentColor;}
 .tok.locked .tbox{border-color:transparent;}
 .tname{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:1px;display:block;}
 .tcode{font-size:7.5px;opacity:.5;letter-spacing:1px;}
 
-/* LOG / RESET BTNS */
-.logbtn{width:100%;background:var(--red);border:none;color:white;
-  padding:13px;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:5px;
-  cursor:pointer;border-radius:3px;transition:all .2s;position:relative;overflow:hidden;margin-bottom:8px;}
+.barrels-inner{padding:10px 14px 12px;}
+.barrels-row{display:flex;align-items:center;justify-content:center;gap:20px;margin-bottom:4px;}
+.barrel-wrap{text-align:center;}
+.barrel-btn{font-size:clamp(36px,10vw,52px);background:none;border:none;cursor:pointer;display:block;line-height:1;
+  filter:sepia(1) saturate(5) hue-rotate(5deg) brightness(1.1) drop-shadow(0 0 10px rgba(240,180,41,.55));
+  animation:bsway 3s ease-in-out infinite;-webkit-tap-highlight-color:transparent;transition:all .2s;}
+@keyframes bsway{0%,100%{transform:rotate(-5deg) translateY(0)}50%{transform:rotate(5deg) translateY(-3px)}}
+.barrel-btn.used{filter:grayscale(1) brightness(.3) !important;animation:none !important;cursor:default;}
+.barrel-btn.undone{filter:sepia(1) saturate(5) hue-rotate(5deg) brightness(1.1) drop-shadow(0 0 12px rgba(240,180,41,.7)) !important;animation:bsway 3s ease-in-out infinite !important;cursor:pointer;}
+.barrel-lbl{font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:2px;color:var(--barrel);margin-top:3px;text-transform:uppercase;}
+.barrel-lbl.hit{color:var(--red2);}
+.barrel-counter{text-align:center;}
+.bc-num{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--barrel);letter-spacing:2px;line-height:1;}
+.bc-lbl{font-size:7.5px;letter-spacing:2px;color:var(--dim);}
+.barrels-info{font-size:8.5px;color:var(--dim);text-align:center;padding-top:4px;}
+
+.logbtn{width:100%;background:var(--red);border:none;color:white;padding:13px;
+  font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:5px;cursor:pointer;
+  border-radius:3px;transition:all .2s;position:relative;overflow:hidden;margin-bottom:8px;}
 .logbtn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.06) 0%,transparent 60%);}
 .logbtn:hover{background:var(--red2);box-shadow:0 0 24px rgba(231,76,60,.4);}
 .logbtn:active{transform:scale(.98);}
-.reset-game-btn{width:100%;background:transparent;border:1px solid rgba(231,76,60,.25);
-  color:rgba(231,76,60,.45);padding:9px;font-family:'Bebas Neue',sans-serif;font-size:15px;
-  letter-spacing:4px;cursor:pointer;border-radius:3px;transition:all .2s;}
-.reset-game-btn:hover{border-color:var(--red);color:var(--red);background:rgba(231,76,60,.05);}
+.reset-btn{width:100%;background:transparent;border:1px solid rgba(231,76,60,.25);color:rgba(231,76,60,.45);
+  padding:9px;font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:4px;
+  cursor:pointer;border-radius:3px;transition:all .2s;}
+.reset-btn:hover{border-color:var(--red);color:var(--red);background:rgba(231,76,60,.05);}
 
-/* LOG LIST */
 .llist{max-height:280px;overflow-y:auto;}
 .lempty{padding:20px;text-align:center;color:var(--dim);font-size:11px;letter-spacing:1px;}
-.lrow{display:grid;grid-template-columns:42px 1fr auto;gap:10px;align-items:start;
-  padding:10px 14px;border-bottom:1px solid rgba(13,122,181,.07);cursor:pointer;transition:background .1s;}
+.lrow{display:grid;grid-template-columns:42px 1fr auto;gap:10px;align-items:start;padding:10px 14px;border-bottom:1px solid rgba(13,122,181,.07);cursor:pointer;transition:background .1s;}
 .lrow:hover{background:rgba(13,122,181,.05);}
 .lrow:last-child{border-bottom:none;}
 .lrn{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--dim);line-height:1;text-align:center;}
@@ -219,70 +165,55 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;
 .bdg.oos{background:rgba(39,174,96,.25);color:var(--oos);}
 .bdg.sb{background:rgba(230,126,34,.25);color:var(--sb);}
 .bdg.em{background:rgba(142,68,173,.25);color:var(--em);}
-
 ::-webkit-scrollbar{width:3px;}
 ::-webkit-scrollbar-track{background:var(--mid);}
 ::-webkit-scrollbar-thumb{background:var(--lift);border-radius:2px;}
 
-/* TOAST */
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(60px);
-  background:var(--surf);border:1px solid var(--glow);color:var(--foam);
-  padding:9px 20px;border-radius:3px;font-size:11px;letter-spacing:2px;
-  transition:transform .3s ease;z-index:9999;white-space:nowrap;
-  box-shadow:0 0 20px rgba(13,122,181,.3);}
+  background:var(--surf);border:1px solid var(--glow);color:var(--foam);padding:9px 20px;
+  border-radius:3px;font-size:11px;letter-spacing:2px;transition:transform .3s ease;
+  z-index:9999;white-space:nowrap;box-shadow:0 0 20px rgba(13,122,181,.3);}
 .toast.show{transform:translateX(-50%) translateY(0);}
 
-/* ══ JAWS WINS OVERLAY ══ */
-.jwins-overlay{
-  position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.97);
+.jwins-overlay{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.97);
   display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
-  overflow-y:auto;padding:20px 16px 40px;
-  opacity:0;pointer-events:none;transition:opacity .5s ease;
-}
+  overflow-y:auto;padding:20px 16px 40px;opacity:0;pointer-events:none;transition:opacity .5s ease;}
 .jwins-overlay.show{opacity:1;pointer-events:all;}
 .jwins-hero-img{width:100%;max-width:380px;border-radius:6px;border:2px solid var(--red2);
   box-shadow:0 0 40px rgba(231,76,60,.5);margin-bottom:16px;object-fit:cover;display:block;}
 .jwins-hero-ph{width:100%;max-width:380px;background:var(--mid);border:2px solid var(--red2);
-  border-radius:6px;height:160px;margin-bottom:16px;display:flex;align-items:center;justify-content:center;
+  border-radius:6px;height:160px;margin-bottom:16px;display:none;align-items:center;justify-content:center;
   font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:4px;color:var(--red2);}
 .jwins-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,10vw,52px);
-  letter-spacing:6px;color:var(--red2);text-align:center;
-  text-shadow:0 0 30px rgba(231,76,60,.6);line-height:1.1;margin-bottom:6px;}
-.jwins-reason{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:3px;
-  color:var(--foam);text-align:center;margin-bottom:12px;text-transform:uppercase;}
-.jwins-barrels{display:flex;gap:12px;justify-content:center;margin-bottom:12px;font-size:38px;}
+  letter-spacing:6px;color:var(--red2);text-align:center;text-shadow:0 0 30px rgba(231,76,60,.6);line-height:1.1;margin-bottom:6px;}
+.jwins-reason{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:3px;color:var(--foam);
+  text-align:center;margin-bottom:12px;text-transform:uppercase;}
+.jwins-barrels{display:flex;gap:12px;justify-content:center;margin-bottom:12px;}
+.jwins-barrel-icon{font-size:42px;filter:sepia(1) saturate(5) hue-rotate(5deg) brightness(1.1) drop-shadow(0 0 10px rgba(240,180,41,.55));}
 .jwins-stats{background:var(--mid);border:1px solid var(--border);border-radius:6px;
   width:100%;max-width:380px;padding:14px;margin-bottom:16px;}
-.jstat{display:flex;justify-content:space-between;align-items:center;
-  padding:7px 0;border-bottom:1px solid rgba(13,122,181,.1);}
+.jstat{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(13,122,181,.1);}
 .jstat:last-child{border-bottom:none;}
 .jstat-lbl{font-size:9.5px;letter-spacing:1.5px;color:var(--dim);text-transform:uppercase;}
 .jstat-val{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--white);}
 .jstat-val.red{color:var(--red2);}
 .jwins-btn{background:var(--red);border:none;color:white;padding:14px 32px;
-  font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:4px;
-  cursor:pointer;border-radius:4px;transition:all .2s;box-shadow:0 0 20px rgba(231,76,60,.4);}
+  font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:4px;cursor:pointer;
+  border-radius:4px;transition:all .2s;box-shadow:0 0 20px rgba(231,76,60,.4);}
 .jwins-btn:hover{background:var(--red2);box-shadow:0 0 30px rgba(231,76,60,.6);}
 
-/* barrel hit animation */
-@keyframes barrelHit{
-  0%{transform:scale(1) rotate(0)}20%{transform:scale(1.5) rotate(-20deg)}
-  50%{transform:scale(.85) rotate(20deg)}80%{transform:scale(1.1) rotate(-8deg)}
-  100%{transform:scale(1) rotate(90deg)}
-}
+@keyframes barrelHit{0%{transform:scale(1) rotate(0)}20%{transform:scale(1.5) rotate(-20deg)}50%{transform:scale(.85) rotate(20deg)}80%{transform:scale(1.1) rotate(-8deg)}100%{transform:scale(1) rotate(90deg)}}
 .barrel-btn.animating{animation:barrelHit .6s ease forwards !important;}
 </style>
 </head>
 <body>
 <div class="app">
 
-<!-- HEADER -->
 <div class="hdr">
   <div class="logo"><span class="fin">▲</span>JAWS<span class="fin">▲</span></div>
   <div class="tagline">Secret Shark Movement Log · Phase 1</div>
 </div>
 
-<!-- STATUS -->
 <div class="status">
   <div class="stat"><span class="slbl">Round</span><span class="sval" id="s-r">1</span></div>
   <div class="stat"><span class="slbl">Eaten</span><span class="sval r" id="s-e">0</span></div>
@@ -290,17 +221,15 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;
   <div class="stat"><span class="slbl">Zone</span><span class="sval b" id="s-z">—</span></div>
 </div>
 
-<!-- 1. ROUND ENTRY (nav + swimmers + tokens) -->
+<!-- 1. ROUND ENTRY -->
 <div class="section">
   <div class="sec-hd"><div class="dot"></div>Round Entry</div>
   <div class="rb">
-
     <div class="rnav">
       <button class="nbtn" id="bp" onclick="chR(-1)">◀ PREV</button>
       <div class="rdisp"><div class="rbig" id="rn">1</div><div class="rlbl">Round</div></div>
       <button class="nbtn" id="bn" onclick="chR(1)">NEXT ▶</button>
     </div>
-
     <label class="fl">🩸 Swimmers Eaten This Round</label>
     <div class="swim">
       <div class="si"><span class="slb">North</span><div class="sc"><button class="cb" onclick="adj('N',-1)">−</button><div class="cv" id="cN">0</div><button class="cb" onclick="adj('N',1)">+</button></div></div>
@@ -308,15 +237,13 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;
       <div class="si"><span class="slb">East</span><div class="sc"><button class="cb" onclick="adj('E',-1)">−</button><div class="cv" id="cE">0</div><button class="cb" onclick="adj('E',1)">+</button></div></div>
       <div class="si"><span class="slb">West</span><div class="sc"><button class="cb" onclick="adj('W',-1)">−</button><div class="cv" id="cW">0</div><button class="cb" onclick="adj('W',1)">+</button></div></div>
     </div>
-
     <label class="fl">⚡ Power Tokens — Once Per Game</label>
     <div class="tokens">
-      <div class="tok ff"  id="tk-FF"  onclick="togTok('FF')"> <div class="tbox" id="cb-FF"></div> <div><span class="tname">Feeding Frenzy</span><span class="tcode">FF</span></div></div>
+      <div class="tok ff"  id="tk-FF"  onclick="togTok('FF')"><div class="tbox" id="cb-FF"></div><div><span class="tname">Feeding Frenzy</span><span class="tcode">FF</span></div></div>
       <div class="tok oos" id="tk-OOS" onclick="togTok('OOS')"><div class="tbox" id="cb-OOS"></div><div><span class="tname">Out Of Sight</span><span class="tcode">OOS</span></div></div>
-      <div class="tok sb"  id="tk-SB"  onclick="togTok('SB')"> <div class="tbox" id="cb-SB"></div> <div><span class="tname">Speed Burst</span><span class="tcode">SB</span></div></div>
-      <div class="tok em"  id="tk-EM"  onclick="togTok('EM')"> <div class="tbox" id="cb-EM"></div> <div><span class="tname">Evasive Moves</span><span class="tcode">EM</span></div></div>
+      <div class="tok sb"  id="tk-SB"  onclick="togTok('SB')"><div class="tbox" id="cb-SB"></div><div><span class="tname">Speed Burst</span><span class="tcode">SB</span></div></div>
+      <div class="tok em"  id="tk-EM"  onclick="togTok('EM')"><div class="tbox" id="cb-EM"></div><div><span class="tname">Evasive Moves</span><span class="tcode">EM</span></div></div>
     </div>
-
   </div>
 </div>
 
@@ -324,137 +251,171 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;
 <div class="section">
   <div class="sec-hd"><div class="dot"></div>Amity Island — Tap Zone to Position</div>
   <div class="map-wrap">
-    <div class="map-outer" id="map-outer">
-
-      <div class="map-placeholder" id="map-ph">
+    <div class="map-outer">
+      <div class="map-ph" id="map-ph">
         <span style="font-size:28px">🗺️</span>
-        <span>Map images loading…</span>
-        <span style="font-size:8.5px;opacity:.6;line-height:1.5">Set Google Drive images to<br>"Anyone with the link can view"</span>
+        <span>Map loading…</span>
+        <span style="font-size:8.5px;opacity:.6;line-height:1.5">Set Drive images to "Anyone with the link"</span>
       </div>
 
-      <!-- Base board image -->
-      <img class="map-base" id="img-FULL"
-        src="https://lh3.googleusercontent.com/d/1rxF9G5N0tolxuJZjG_toguunUst5SaYh"
-        onload="imgOK()" onerror="imgFail()" alt="">
-
-      <!-- Zone-specific overlays -->
-      <img class="map-overlay" id="img-N" src="https://lh3.googleusercontent.com/d/1kNENtmxPZxD9OAsT82Ap876lWJ_X1Gj9" alt="">
-      <img class="map-overlay" id="img-S" src="https://lh3.googleusercontent.com/d/1EYd_4qFF3mnLUiYVUc1BlV5bvt6UYHME" alt="">
-      <img class="map-overlay" id="img-E" src="https://lh3.googleusercontent.com/d/1NnLxndpyHoatg4nISHxgO2gKG7x7q3vb" alt="">
-      <img class="map-overlay" id="img-W" src="https://lh3.googleusercontent.com/d/17rgd0RpcWWq0KIskj9tF96KHcjCttnvF" alt="">
-      <img class="map-overlay" id="img-1" src="https://lh3.googleusercontent.com/d/1lQ2-k5Huyv_vy4b_F2GFXMxknTQP3qMr" alt="">
-      <img class="map-overlay" id="img-2" src="https://lh3.googleusercontent.com/d/1bkAVkBx4eubVlhIrSsf9BqHf2jBW7kaA" alt="">
-      <img class="map-overlay" id="img-3" src="https://lh3.googleusercontent.com/d/1KGkK7iXaGn8BfcLHDpdNdzeKrZGND-ob" alt="">
-      <img class="map-overlay" id="img-4" src="https://lh3.googleusercontent.com/d/1uq7oJNwPxRJH8ArYn1xhN5x68TYKWI6n" alt="">
-      <img class="map-overlay" id="img-5" src="https://lh3.googleusercontent.com/d/1am4AMiI1oxD4281Nc-WKmdTszw6mGIGq" alt="">
-      <img class="map-overlay" id="img-6" src="https://lh3.googleusercontent.com/d/1um2tBQl2eY45hHMBld0_XhOeDZc69Tup" alt="">
-      <img class="map-overlay" id="img-7" src="https://lh3.googleusercontent.com/d/1Ry1EwOy_JWe1RgFpt1-2TXJOKnw-fM6U" alt="">
-      <img class="map-overlay" id="img-8" src="https://lh3.googleusercontent.com/d/1wUSo_d0JNM-56SPynfizxIyjlrqED-YM" alt="">
+      <img class="map-base" id="img-FULL" src="https://lh3.googleusercontent.com/d/1rxF9G5N0toIxuJZjG_toguunUst5SaYh" onload="imgOK()" onerror="imgFail()" alt="">
+      <img class="map-overlay" id="img-N"  src="https://lh3.googleusercontent.com/d/1kNENtmxPZxD9OAsT82Ap876lWJ_X1Gj9" alt="">
+      <img class="map-overlay" id="img-S"  src="https://lh3.googleusercontent.com/d/1EYd_4qFF3mnLUiYVUc1BlV5bvt6UYHME" alt="">
+      <img class="map-overlay" id="img-E"  src="https://lh3.googleusercontent.com/d/1NnLxndpyHoatg4nISHxgO2gKG7x7q3vb" alt="">
+      <img class="map-overlay" id="img-W"  src="https://lh3.googleusercontent.com/d/17rgd0RpcWWq0Klskj9tF96KHcjCttnvF" alt="">
+      <img class="map-overlay" id="img-1"  src="https://lh3.googleusercontent.com/d/1lQ2-k5Huyv_vy4b_F2GFXMxknTQP3qMr" alt="">
+      <img class="map-overlay" id="img-2"  src="https://lh3.googleusercontent.com/d/1bkAVkBx4eubVlhIrSsf9BqHf2jBW7kaA" alt="">
+      <img class="map-overlay" id="img-3"  src="https://lh3.googleusercontent.com/d/1KGkK7iXaGn8BfcLHDpdNdzeKrZGND-ob" alt="">
+      <img class="map-overlay" id="img-4"  src="https://lh3.googleusercontent.com/d/1uq7oJNwPxRJH8ArYn1xhN5x68TYKWI6n" alt="">
+      <img class="map-overlay" id="img-5"  src="https://lh3.googleusercontent.com/d/1am4AMiI1oxD4281Nc-WKmdTszw6mGIGq" alt="">
+      <img class="map-overlay" id="img-6"  src="https://lh3.googleusercontent.com/d/1um2tBQl2eY45hHMBld0_XhOeDZc69Tup" alt="">
+      <!-- Zone 7: corrected ID — zeros not O's: 1Ry1Ew0y and 2TXJ0Knw -->
+      <img class="map-overlay" id="img-7"  src="https://lh3.googleusercontent.com/d/1Ry1Ew0y_JWe1RgFpt1-2TXJ0Knw-fM6U" alt="">
+      <img class="map-overlay" id="img-8"  src="https://lh3.googleusercontent.com/d/1wUSo_d0JNM-56SPynfizxIyjlrqED-YM" alt="">
 
       <!--
-        SVG overlay: viewBox="0 0 300 200" (3:2 ratio)
-        Zones are drawn as accurate polygons matching the real board layout.
-        Board has an oval swim boundary. The island sits center-right.
-        Zone layout (from board image study):
-          1  = top-left water         2  = top-right water
-          N  = north water strip      6  = far east water (right side)
-          W  = west water             5  = southwest water
-          E  = east-center water      8  = southeast water
-          S  = south water            7  = south-southwest water
-          3  = bottom-left outer      4  = bottom-right outer
+        SVG Zones — viewBox 900x600, traced from zone diagram.
+        NO text labels on map (removed per request).
+        
+        ZONE 3 FIX: Zone 3 is the outer bottom-left area. From pixel analysis:
+        - Zone W (yellow) occupies roughly x=36-258, y=263-533
+        - Zone 7 (orange) occupies roughly x=156-409, y=437-552  
+        - Zone 3 is everything OUTSIDE those zones in the bottom-left quadrant
+        - It wraps around the outside of W and 7, from the left edge to x≈450
+        - Think of it as the outer "frame" in the bottom-left
+        Zone 3 polygon: start from bottom of zone 1 (y=255,x=0), follow the outer left
+        edge DOWN to (0,600), right to (450,600), then UP along the outer bottom of
+        zone 7 to (159,542), then along outer edge of W up to rejoin zone 1.
+        KEY: Zone 3 does NOT include W or 7 pixels — it wraps AROUND them on the outside.
+        
+        ZONE 4 FIX: Zone 4 is the outer bottom-right area.
+        - Zone S (violet) ends at roughly x=705, y=565 at the bottom-right tip
+        - Zone 8 (cyan) occupies x=643-876, y=262-562
+        - Zone 4 is everything OUTSIDE those zones in the bottom-right quadrant
+        - It is the outer "frame" below and right of zone 8, and right of zone S bottom
+        Zone 4 polygon: from (900,262) follows the right edge DOWN to (900,600),
+        left to (410,600), then UP along the outer bottom of zones S/8/7 to rejoin.
+        KEY: Zone 4 does NOT include S or 8 pixels.
       -->
-      <svg class="zones-svg" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" id="zones-svg">
+      <svg class="zones-svg" viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg" id="zones-svg">
 
-        <!-- Zone 1: top-left water -->
-        <polygon class="zone-poly" data-z="1"
-          points="0,0 115,0 115,15 90,35 70,55 50,75 30,90 0,90"/>
-        <text class="zone-label-svg" data-z="1" x="38" y="32">1</text>
+        <!-- Zone 1: top-left white corner (above and left of island oval) -->
+        <polygon class="zp" data-z="1"
+          points="0,0 445,0 439,45 384,60 344,75 311,90 281,105 256,120 233,135 214,150 197,165 114,255 0,255"/>
 
-        <!-- Zone N: north-center water strip -->
-        <polygon class="zone-poly" data-z="N"
-          points="115,0 195,0 195,18 175,30 155,38 135,40 115,38 115,15"/>
-        <text class="zone-label-svg" data-z="N" x="148" y="18">N</text>
+        <!-- Zone N: north beach water strip -->
+        <polygon class="zp" data-z="N"
+          points="443,45 387,60 347,75 313,90 284,105 258,120 236,135 216,150 199,165 213,180 240,195 270,210 284,210 298,195 314,180 341,165 366,150 418,135 443,120 444,105 444,90 444,75 444,60 445,45"/>
 
-        <!-- Zone 2: top-right water -->
-        <polygon class="zone-poly" data-z="2"
-          points="195,0 300,0 300,70 270,65 250,55 230,45 210,35 195,18"/>
-        <text class="zone-label-svg" data-z="2" x="256" y="28">2</text>
+        <!-- Zone 6: northeast water -->
+        <polygon class="zp" data-z="6"
+          points="492,40 445,55 445,70 445,85 445,100 445,115 652,115 668,100 670,85 647,70 615,55 551,40"/>
 
-        <!-- Zone 6: northeast water (right of island) -->
-        <polygon class="zone-poly" data-z="6"
-          points="250,55 300,70 300,140 275,130 255,115 240,100 238,80 230,45"/>
-        <text class="zone-label-svg" data-z="6" x="271" y="98">6</text>
+        <!-- Zone 2: top-right black corner — closes gap by starting at x=445 top -->
+        <polygon class="zp" data-z="2"
+          points="445,0 900,0 900,262 876,262 854,277 840,257 827,241 813,226 799,211 785,196 771,181 756,166 742,151 729,136 714,121 697,106 679,91 664,106 635,121 652,115 668,100 670,85 647,70 615,55 551,40 492,40 445,40 445,0"/>
 
-        <!-- Zone W: west water -->
-        <polygon class="zone-poly" data-z="W"
-          points="0,90 30,90 50,75 70,55 90,35 115,15 115,38 100,60 85,82 75,105 65,125 45,135 20,135 0,130"/>
-        <text class="zone-label-svg" data-z="W" x="14" y="112">W</text>
+        <!-- Zone E: East Beach water -->
+        <polygon class="zp" data-z="E"
+          points="677,91 664,106 635,121 639,136 640,151 649,166 654,181 655,196 655,211 653,226 651,241 655,256 839,256 827,241 813,226 799,211 785,196 771,181 756,166 742,151 729,136 714,121 697,106 679,91"/>
 
-        <!-- Zone 5: southwest water -->
-        <polygon class="zone-poly" data-z="5"
-          points="0,130 20,135 45,135 65,125 75,145 70,165 55,180 30,190 0,192"/>
-        <text class="zone-label-svg" data-z="5" x="16" y="162">5</text>
+        <!-- Zone 5: green northwest strip -->
+        <polygon class="zp" data-z="5"
+          points="195,169 180,184 169,199 156,214 140,229 126,244 114,259 128,274 149,289 172,304 193,319 216,319 226,304 227,289 225,274 230,259 251,244 266,229 273,214 246,199 219,184 196,169"/>
 
-        <!-- Zone E: east water (right of zone 6, below) -->
-        <polygon class="zone-poly" data-z="E"
-          points="275,130 300,140 300,200 270,200 255,180 248,160 252,140"/>
-        <text class="zone-label-svg" data-z="E" x="272" y="162">E</text>
+        <!-- Zone W: yellow west water/West Beach -->
+        <polygon class="zp" data-z="W"
+          points="112,263 92,278 77,293 65,308 54,323 46,338 40,353 37,368 36,383 37,398 39,413 42,428 49,443 57,458 65,473 81,488 95,503 112,518 134,533 165,533 181,518 196,503 212,488 229,473 243,458 258,443 136,428 123,413 123,398 113,383 99,368 87,353 87,338 199,323 177,308 153,293 131,278 112,263"/>
 
-        <!-- Zone 8: southeast water -->
-        <polygon class="zone-poly" data-z="8"
-          points="238,155 252,140 248,160 255,180 270,200 235,200 215,192 210,175 220,162"/>
-        <text class="zone-label-svg" data-z="8" x="236" y="178">8</text>
+        <!-- Zone 8: cyan southeast water -->
+        <polygon class="zp" data-z="8"
+          points="742,262 759,277 759,292 668,307 643,322 645,337 645,352 646,367 646,382 643,397 643,412 644,427 652,442 658,457 664,472 671,487 678,502 685,517 692,532 700,547 706,562 749,562 777,547 793,532 806,517 816,502 826,487 833,472 840,457 847,442 852,427 857,412 862,397 865,382 868,367 872,352 871,337 870,322 867,307 860,292 854,277 876,262"/>
 
-        <!-- Zone S: south-center water -->
-        <polygon class="zone-poly" data-z="S"
-          points="100,168 125,178 150,183 175,181 195,175 210,175 215,192 200,200 100,200 85,192 90,178"/>
-        <text class="zone-label-svg" data-z="S" x="146" y="195">S</text>
+        <!-- Zone 7: orange southwest water -->
+        <polygon class="zp" data-z="7"
+          points="348,437 252,452 235,467 219,482 203,497 188,512 172,527 159,542 247,542 297,527 359,512 409,497 409,482 408,467 407,452 358,437"/>
 
-        <!-- Zone 7: southwest water -->
-        <polygon class="zone-poly" data-z="7"
-          points="55,180 70,165 75,145 90,160 90,178 85,192 70,200 40,200 30,190"/>
-        <text class="zone-label-svg" data-z="7" x="58" y="193">7</text>
+        <!-- Zone S: violet south water / South Beach -->
+        <polygon class="zp" data-z="S"
+          points="431,439 408,451 409,463 409,475 410,487 410,499 468,511 621,523 641,535 658,547 677,559 704,559 698,547 692,535 687,523 681,511 675,499 669,487 664,475 658,463 613,451 452,439"/>
 
-        <!-- Zone 3: bottom-left outer corner -->
-        <polygon class="zone-poly" data-z="3"
-          points="0,192 30,190 40,200 0,200"/>
-        <text class="zone-label-svg" data-z="3" x="10" y="198" font-size="7">3</text>
+        <!--
+          Zone 3: FIXED — outer bottom-left frame wrapping OUTSIDE zones W and 7.
+          From pixel data: zone 3 is the non-named area at x=0-449, y=431-599.
+          But W occupies the interior of that region (x=36-258, y=263-533).
+          Zone 3 is the OUTER BORDER — the area between the oval/edge and zones W/7.
+          
+          Tracing clockwise from bottom of zone 1:
+          Start at (0,255) [bottom-left of zone 1], go DOWN the left edge to (0,600),
+          then RIGHT to (450,600), then UP to where zone 7 ends at bottom (159,542),
+          then follow OUTSIDE of zone 7 up-left to (172,527),(188,512),(203,497),(219,482),(235,467),
+          (252,452),(348,437) → but that's inside zone 7, so instead:
+          
+          We trace the OUTSIDE path: from (0,600)→(450,600) then UP along x=450 until we hit
+          the bottom of zone 7 outer edge, then follow along outer edge of W back to (0,255).
+          
+          The outer left edge below zone W starts where W ends: W's leftmost point is x=36 at y=383.
+          Below the W zone (y>533), the area is just the outer border.
+          
+          Clean polygon:
+          - Left edge: x=0, y=255 down to y=600
+          - Bottom: y=600, x=0 to x=450  
+          - Right side of zone 3: x=450, y=600 up to y=533 (bottom of W)
+          - Then follow outer-left edge of W zone back up to zone 1 boundary
+          But we must NOT include the W zone pixels themselves.
+          
+          Solution: Zone 3 = two sub-areas combined into one polygon:
+          The outer-left strip (x=0 to ~x=36) from y=255 to y=600,
+          PLUS the bottom strip (y=533 to y=600) from x=36 to x=450.
+          
+          Simplest clean polygon that doesn't overlap W or 7:
+        -->
+        <!-- Zone 3: outer left border, wraps outside W, extends below zone 7 to butt zone 4 -->
+        <polygon class="zp" data-z="3"
+          points="0,255 112,263 92,278 77,293 65,308 54,323 46,338 40,353 37,368 36,383 37,398 39,413 42,428 49,443 57,458 65,473 81,488 95,503 112,518 134,533 155,555 409,555 409,600 0,600"/>
 
-        <!-- Zone 4: bottom-right outer corner -->
-        <polygon class="zone-poly" data-z="4"
-          points="235,200 270,200 300,200 300,200"/>
-        <!-- (very thin strip — label not needed, covered by zone E/8) -->
-
-        <!-- Island body (non-clickable, just visual) -->
-        <ellipse cx="168" cy="118" rx="82" ry="58"
-          fill="rgba(10,25,8,.45)" stroke="rgba(60,120,40,.2)" stroke-width="0.8" pointer-events="none"/>
-
-        <!-- Zone division lines across island (visual only) -->
-        <!-- Vertical line through center of island -->
-        <line x1="168" y1="62" x2="162" y2="175" stroke="rgba(255,255,255,.08)" stroke-width="0.6" stroke-dasharray="3,3" pointer-events="none"/>
-        <!-- Horizontal line through center -->
-        <line x1="88" y1="118" x2="248" y2="118" stroke="rgba(255,255,255,.08)" stroke-width="0.6" stroke-dasharray="3,3" pointer-events="none"/>
-
-        <!-- Swim-zone oval boundary -->
-        <ellipse cx="150" cy="108" rx="148" ry="100"
-          fill="none" stroke="rgba(13,122,181,.3)" stroke-width="1" stroke-dasharray="5,4" pointer-events="none"/>
+        <!--
+          Zone 4: FIXED — outer bottom-right frame wrapping OUTSIDE zones S and 8.
+          From pixel data: zone 4 is the non-named area at x=401-899, y=431-599
+          but excluding S (x=408-705, y=439-565) and 8 (x=643-876, y=262-562).
+          
+          Zone 4 traces:
+          - From (876,262) right edge going down to (900,600)
+          - Left along bottom to (410,600)
+          - Up to bottom of zone S at (410,510)
+          - Along outer bottom of S and 7: (409,497),(409,482),(408,467),(407,452),(348,437)
+            but those are zone 7 points... zone 4 is to the RIGHT of zones S and 7.
+          - So from (410,510) go right along S zone bottom: S ends at x=704 at y=559
+          - Then follow bottom of zone 8 up its left side
+          
+          Clean solution: Zone 4 = right side + bottom strip not covered by S or 8:
+        -->
+        <polygon class="zp" data-z="4"
+          points="
+            876,262
+            900,262
+            900,600
+            410,600
+            410,510
+            410,499 468,511 621,523 641,535 658,547 677,559 704,559
+            706,562 749,562 777,547 793,532 806,517 816,502 826,487 833,472 840,457 847,442 852,427 857,412 862,397 865,382 868,367 872,352 871,337 870,322 867,307 860,292 854,277 876,262
+          "/>
 
         <!-- Shark marker (moved by JS) -->
-        <text id="shark-svg" class="shark-svg" x="-30" y="-30" text-anchor="middle" dominant-baseline="middle" font-size="14">🦈</text>
+        <text id="shark-mk" class="shark-mk" x="-60" y="-60">🦈</text>
 
       </svg>
-    </div><!-- /map-outer -->
-
+    </div>
     <div class="img-note" id="img-note">
-      <strong>📁 Images not showing?</strong> In Google Drive, right-click each JAWS map image → Share → set to <strong>"Anyone with the link"</strong> (Viewer) → Done, then reload.
+      <strong>📁 Images not showing?</strong> In Google Drive, right-click each JAWS image → Share → <strong>"Anyone with the link"</strong> → Done, then reload.
     </div>
   </div>
 </div>
 
-<!-- 3. LOCATION BUTTONS (directly below map) -->
+<!-- 3. LOCATION BUTTONS -->
 <div class="section">
   <div class="sec-hd"><div class="dot"></div>Select Location</div>
-  <div class="loc-pad" style="padding-bottom:10px;">
+  <div class="loc-pad">
     <div class="lgrid">
       <button class="lbtn" data-loc="N" onclick="pickL('N')">N<span class="sub">North</span></button>
       <button class="lbtn" data-loc="S" onclick="pickL('S')">S<span class="sub">South</span></button>
@@ -472,7 +433,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;
   </div>
 </div>
 
-<!-- 4. BARRELS + LOG BUTTON -->
+<!-- 4. BARRELS + LOG -->
 <div class="section">
   <div class="sec-hd"><div class="dot"></div>Barrels — Tap When Barreled</div>
   <div class="barrels-inner">
@@ -494,89 +455,69 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;
   </div>
   <div style="padding:0 14px 14px;">
     <button class="logbtn" onclick="logRound()">⚓ LOG ROUND</button>
-    <button class="reset-game-btn" onclick="resetGame()">⚠ RESET GAME</button>
+    <button class="reset-btn" onclick="resetGame()">⚠ RESET GAME</button>
   </div>
 </div>
 
-<!-- 5. MOVEMENT LOG -->
+<!-- 5. LOG -->
 <div class="section">
   <div class="sec-hd"><div class="dot"></div>Secret Movement Log</div>
   <div class="llist" id="llist"><div class="lempty">No moves logged yet — the ocean is quiet...</div></div>
 </div>
 
-</div><!-- /app -->
-
-<!-- JAWS WINS OVERLAY -->
-<div class="jwins-overlay" id="jwins-overlay">
-  <img class="jwins-hero-img" id="jwins-img"
-    src="https://lh3.googleusercontent.com/d/17ypvxY_Pz9mGmDAdcTzZZvAoqX0pbSPD"
-    alt="Jaws Wins" onerror="this.style.display='none';document.getElementById('jwins-ph').style.display='flex'">
-  <div class="jwins-hero-ph" id="jwins-ph" style="display:none">JAWS WINS · ACT 1</div>
-  <div class="jwins-title" id="jwins-title">Phase 1 Complete!</div>
-  <div class="jwins-reason" id="jwins-reason">⚓ Barreled Twice ⚓</div>
-  <div class="jwins-barrels" id="jwins-barrels">🛢️🛢️</div>
-  <div class="jwins-stats" id="jwins-stats"></div>
-  <button class="jwins-btn" onclick="dismissWins()">Enter Phase 2 →</button>
 </div>
 
+<!-- WINS OVERLAY -->
+<div class="jwins-overlay" id="jwins-overlay">
+  <img class="jwins-hero-img" id="jwins-img" src="" alt="Jaws"
+    onerror="this.style.display='none';document.getElementById('jwins-ph').style.display='flex'">
+  <div class="jwins-hero-ph" id="jwins-ph">JAWS · PHASE 1 COMPLETE</div>
+  <div class="jwins-title" id="jwins-title">Phase 1 Complete!</div>
+  <div class="jwins-reason" id="jwins-reason"></div>
+  <div class="jwins-barrels" id="jwins-barrels">
+    <span class="jwins-barrel-icon">🛢️</span>
+    <span class="jwins-barrel-icon">🛢️</span>
+  </div>
+  <div class="jwins-stats" id="jwins-stats"></div>
+  <button class="jwins-btn" id="jwins-btn" onclick="dismissWins()">Enter Phase 2 →</button>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
-// ── SVG zone label IDs for highlight syncing ──
-// We match data-z attributes on both polygons and text labels
+const IMG={BARREL:'1T-95BSm5X-qA6oOfLz5Lv58lFNXqX6Mt',JAWS:'17ypvxY_Pz9mGmDAdcTzZZvAoqX0pbSPD'};
 
-// ── Shark marker positions in SVG viewBox coords (300×200) ──
-const ZSV = {
-  '1':[42,48], 'N':[152,14], '2':[256,30],
-  '6':[276,95], 'W':[22,108], '5':[28,160],
-  'E':[281,158], '8':[240,175], 'S':[150,190],
-  '7':[65,185], '3':[12,197], '4':[260,195]
+// Shark marker centers in SVG 900x600 coords
+const ZSV={
+  '1':[80,130],'N':[331,128],'6':[550,78],'2':[800,75],
+  '5':[193,246],'W':[88,390],'E':[717,194],'8':[780,420],
+  '7':[290,495],'S':[553,490],'3':[60,560],'4':[820,540]
 };
 
-// ── State ──
-let G={
-  round:1,max:20,rounds:{},
-  tokenSpentRound:{FF:0,OOS:0,SB:0,EM:0},
-  barrelRound:{1:0,2:0},
-  winsShown:false
-};
-try{const s=localStorage.getItem('jaws_v5');if(s)G=JSON.parse(s);}catch(e){}
-const save=()=>{try{localStorage.setItem('jaws_v5',JSON.stringify(G));}catch(e){}};
+let G={round:1,max:20,rounds:{},tokenSpentRound:{FF:0,OOS:0,SB:0,EM:0},barrelRound:{1:0,2:0},winsShown:false};
+try{const s=localStorage.getItem('jaws_v9');if(s)G=JSON.parse(s);}catch(e){}
+const save=()=>{try{localStorage.setItem('jaws_v9',JSON.stringify(G));}catch(e){}};
 
 function rd(r){
   if(!G.rounds[r])G.rounds[r]={loc:'',sw:{N:0,S:0,E:0,W:0},tok:{FF:false,OOS:false,SB:false,EM:false}};
   return G.rounds[r];
 }
 
-// ── Image callbacks ──
 function imgOK(){document.getElementById('map-ph').classList.add('hidden');document.getElementById('img-note').style.display='none';}
-function imgFail(){/* keep placeholder */}
+function imgFail(){}
+function totalSwim(){let t=0;Object.values(G.rounds).forEach(r=>{if(r&&r.sw)t+=(r.sw.N||0)+(r.sw.S||0)+(r.sw.E||0)+(r.sw.W||0);});return t;}
 
-// ── Total swimmers ──
-function totalSwim(){
-  let t=0;Object.values(G.rounds).forEach(r=>{if(r&&r.sw)t+=(r.sw.N||0)+(r.sw.S||0)+(r.sw.E||0)+(r.sw.W||0);});
-  return t;
-}
-
-// ── Map: overlay + SVG zone highlight + shark ──
 function syncMap(){
   const loc=rd(G.round).loc;
-  // Overlay images
   document.querySelectorAll('.map-overlay').forEach(el=>el.classList.remove('active'));
   if(loc){const el=document.getElementById('img-'+loc);if(el)el.classList.add('active');}
-  // SVG polygons
-  document.querySelectorAll('.zone-poly').forEach(el=>el.classList.toggle('sel',el.dataset.z===loc));
-  document.querySelectorAll('.zone-label-svg').forEach(el=>el.classList.toggle('sel',el.dataset.z===loc));
-  // Shark marker
-  const mk=document.getElementById('shark-svg');
+  document.querySelectorAll('.zp').forEach(el=>el.classList.toggle('sel',el.dataset.z===loc));
+  const mk=document.getElementById('shark-mk');
   if(loc&&ZSV[loc]){mk.setAttribute('x',ZSV[loc][0]);mk.setAttribute('y',ZSV[loc][1]);}
-  else{mk.setAttribute('x',-30);mk.setAttribute('y',-30);}
+  else{mk.setAttribute('x',-60);mk.setAttribute('y',-60);}
 }
 
-// ── SVG zone clicks ──
 document.getElementById('zones-svg').addEventListener('click',function(e){
-  const poly=e.target.closest('[data-z]');if(!poly)return;
-  pickL(poly.dataset.z);
+  const t=e.target.closest('[data-z]');if(!t)return;pickL(t.dataset.z);
 });
 
 function pickL(z){rd(G.round).loc=z;save();syncLoc();refreshStatus();}
@@ -586,15 +527,13 @@ function syncLoc(){
   syncMap();
 }
 
-// ── Swimmers ──
 function adj(d,delta){
   const r=rd(G.round);r.sw[d]=Math.max(0,(r.sw[d]||0)+delta);
   document.getElementById('c'+d).textContent=r.sw[d];
   save();refreshStatus();
-  if(totalSwim()>=9)setTimeout(()=>showWins('🩸 9 Swimmers Eaten — Jaws Wins!',false),400);
+  if(totalSwim()>=9)setTimeout(()=>showWins('swimmers'),400);
 }
 
-// ── Tokens ──
 function togTok(t){
   const sr=G.tokenSpentRound[t];const r=rd(G.round);
   if(sr!==0&&sr!==G.round){showToast(t+' USED ON ROUND '+sr+' — LOCKED');return;}
@@ -611,7 +550,6 @@ function renderTokens(){
   });
 }
 
-// ── Barrels ──
 function hitBarrel(n){
   const br=G.barrelRound[n];
   if(br!==0&&br!==G.round){showToast('BARREL '+n+' HIT ON ROUND '+br+' — LOCKED');return;}
@@ -622,7 +560,7 @@ function hitBarrel(n){
   setTimeout(()=>{
     btn.classList.remove('animating');G.barrelRound[n]=G.round;save();renderBarrels();
     if(n===1)showToast('🛢️ BARREL 1 HIT! Round '+G.round);
-    if(n===2)setTimeout(()=>showWins('⚓ Barreled Twice — Phase 1 Complete!',true),600);
+    if(n===2)setTimeout(()=>showWins('barrels'),600);
   },650);
 }
 function renderBarrels(){
@@ -630,7 +568,7 @@ function renderBarrels(){
   document.getElementById('barrel-num').textContent=count;
   for(let i=1;i<=2;i++){
     const btn=document.getElementById('barrel-'+i);const lbl=document.getElementById('barrel-lbl-'+i);
-    const br=G.barrelRound[i];const isHit=br!==0;const isThis=br===G.round;const isDiff=isHit&&!isThis;
+    const br=G.barrelRound[i];const isThis=br===G.round;const isDiff=br!==0&&!isThis;
     btn.classList.toggle('used',isDiff);btn.classList.toggle('undone',isThis);
     if(isDiff){lbl.textContent='R'+br+' BARRELED';lbl.className='barrel-lbl hit';}
     else if(isThis){lbl.textContent='TAP TO UNDO';lbl.className='barrel-lbl';lbl.style.color='var(--barrel)';}
@@ -638,16 +576,18 @@ function renderBarrels(){
   }
 }
 
-// ── Wins screen ──
-function showWins(reason,isBarrels){
-  const logged=Object.values(G.rounds).filter(r=>r&&r.loc).length;
-  const eaten=totalSwim();
+function showWins(trigger){
+  const isBarrels=(trigger==='barrels');
+  const eaten=totalSwim();const logged=Object.values(G.rounds).filter(r=>r&&r.loc).length;
   const tokUsed=['FF','OOS','SB','EM'].filter(t=>G.tokenSpentRound[t]!==0);
   const b1=G.barrelRound[1],b2=G.barrelRound[2];
-  document.getElementById('jwins-reason').textContent=reason;
-  document.getElementById('jwins-barrels').style.display=isBarrels?'flex':'none';
+  const img=document.getElementById('jwins-img');
+  img.style.display='block';document.getElementById('jwins-ph').style.display='none';
+  img.src='https://lh3.googleusercontent.com/d/'+(isBarrels?IMG.BARREL:IMG.JAWS);
   document.getElementById('jwins-title').textContent=isBarrels?'Phase 1 Complete!':'JAWS WINS!';
-  document.querySelector('.jwins-btn').textContent=isBarrels?'Enter Phase 2 →':'Continue →';
+  document.getElementById('jwins-reason').textContent=isBarrels?'⚓ Barreled Twice — The Hunt Continues ⚓':'🩸 9 Swimmers Eaten — Phase 1 Complete';
+  document.getElementById('jwins-barrels').style.display=isBarrels?'flex':'none';
+  document.getElementById('jwins-btn').textContent=isBarrels?'Enter Phase 2 →':'Continue to Phase 2 →';
   document.getElementById('jwins-stats').innerHTML=`
     <div class="jstat"><span class="jstat-lbl">🩸 Total Swimmers Eaten</span><span class="jstat-val red">${eaten}</span></div>
     <div class="jstat"><span class="jstat-lbl">📋 Rounds Completed</span><span class="jstat-val">${logged}</span></div>
@@ -659,7 +599,6 @@ function showWins(reason,isBarrels){
 }
 function dismissWins(){document.getElementById('jwins-overlay').classList.remove('show');showToast('PHASE 2 BEGINS — GOOD LUCK!');}
 
-// ── Round nav ──
 function chR(d){G.round=Math.max(1,Math.min(G.max,G.round+d));save();renderRound();}
 function renderRound(){
   const r=G.round,data=rd(r);
@@ -674,10 +613,8 @@ function refreshStatus(){
   document.getElementById('s-l').textContent=Object.values(G.rounds).filter(r=>r&&r.loc).length;
   document.getElementById('s-z').textContent=rd(G.round).loc||'—';
 }
-
 function logRound(){save();renderLog();refreshStatus();showToast('ROUND '+G.round+' LOGGED ✓');
   if(totalSwim()<9&&G.round<G.max)setTimeout(()=>chR(1),380);}
-
 function renderLog(){
   const el=document.getElementById('llist');
   const entries=Object.entries(G.rounds).filter(([,r])=>r&&r.loc).sort((a,b)=>+a[0]-+b[0]);
@@ -693,7 +630,6 @@ function renderLog(){
   }).join('');
 }
 function jumpTo(n){G.round=+n;save();renderRound();document.querySelector('.section:nth-child(4)').scrollIntoView({behavior:'smooth'});}
-
 function resetGame(){
   if(!confirm('Reset all game data? This cannot be undone.'))return;
   G.rounds={};G.round=1;G.tokenSpentRound={FF:0,OOS:0,SB:0,EM:0};
@@ -706,8 +642,6 @@ function showToast(msg){
   const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');
   setTimeout(()=>el.classList.remove('show'),2500);
 }
-
-// Init
 renderRound();renderLog();
 </script>
 </body>
